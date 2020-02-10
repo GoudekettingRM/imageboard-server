@@ -2,6 +2,7 @@ const { Router } = require("express");
 const { toJWT, toData } = require("./jwt");
 const User = require("../User/model");
 const bcrypt = require("bcrypt");
+const auth = require("./middleware");
 
 const router = new Router();
 
@@ -41,26 +42,10 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.get("/secret-endpoint", async (req, res, next) => {
-  const auth =
-    req.headers.authorization && req.headers.authorization.split(" ");
-  if (auth && auth[0] === "Bearer" && auth[1]) {
-    try {
-      const data = toData(auth[1]);
-      res.send({
-        message: "Thanks for visiting the secret endpoint.",
-        data
-      });
-    } catch (error) {
-      res
-        .status(400)
-        .send({ message: `Error ${error.name}: ${error.message}` });
-    }
-  } else {
-    res.status(401).send({
-      message: "Please supply some valid credentials"
-    });
-  }
+router.get("/secret-endpoint", auth, async (req, res, next) => {
+  res.send({
+    message: `Thanks for visiting the secret endpoint, ${req.user.email}`
+  });
 });
 
 module.exports = router;
