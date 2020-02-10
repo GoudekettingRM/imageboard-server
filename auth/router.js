@@ -20,8 +20,6 @@ router.post("/login", async (req, res, next) => {
           email: email
         }
       });
-      console.log("in first else statement");
-
       if (!user) {
         res
           .status(404)
