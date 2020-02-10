@@ -22,8 +22,8 @@ router.post("/login", async (req, res, next) => {
       });
       if (!user) {
         res
-          .status(404)
-          .send({ message: "No user found with this email" })
+          .status(400)
+          .send({ message: "Invalid login" })
           .end();
       } else if (bcrypt.compareSync(password, user.password)) {
         res.send({
@@ -31,7 +31,7 @@ router.post("/login", async (req, res, next) => {
         });
       } else {
         res.status(400).send({
-          message: "Password was incorrect"
+          message: "Invalid login"
         });
       }
     }
